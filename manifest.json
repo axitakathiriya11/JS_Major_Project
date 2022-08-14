@@ -1,0 +1,16 @@
+{
+  "name": "Pomodoro Time Extension",
+  "description": "Pomodoro Timer & To Do List",
+  "version": "1.0",
+  "manifest_version": 3,
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["storage", "activeTab", "scripting", "alarms", "notifications"],
+  "action": {
+
+    
+  },
+
+  "options_page": "index.html"
+}
