@@ -8,20 +8,22 @@ let timeLeftSection = document.querySelector(".timeLeftSection");
 let btn_start = document.querySelector("#btn-start");
 let btn_reset = document.querySelector("#btn-reset");
 
+let empty_task_list = document.getElementById("empty_task_list");
 let btn_add_task = document.querySelector("#addtask");
 let task_list = document.querySelector("#tasklist");
+let btn_clear_task = document.getElementById("btn-clear-task");
 
-let btn_clear_logs = document.getElementById("btn_clear_logs");
-let btn_clear_task = document.getElementById("btn_clear_task");
+let btn_clear_logs = document.getElementById("btn-clear-logs");
 let btnSave = document.querySelector("#btnSave");
 
-var locationUpdateLog = document.getElementById("locationUpdateLog");
+var reportUpdateLog = document.getElementById("reportUpdateLog");
+let autoStartRounds = document.getElementById("autoStartRounds");
+let longBreakIntervalSlider = document.getElementById(
+  "longBreakIntervalSlider"
+);
+let longBreakIntervalValue = document.getElementById("longBreakIntervalValue");
 let tick_sound = document.getElementById("tick_sound");
 var notificationTextInput = document.getElementById("input_notification_time");
-let NoDataTaskText = document.getElementById("NoDataTaskText");
-let autoStartRoundsInput = document.getElementById("autoStartRoundsInput");
-let longBreakIntervalInput = document.getElementById("longBreakIntervalInput");
-let txt_sliderValue = document.getElementById("txt_sliderValue");
 let backgroundMusicOptions = document.getElementById("backgroundMusicOptions");
 
 var timeleft;
@@ -40,22 +42,19 @@ var notification = new Audio("assets/sounds/notification-bell.mp3");
 
 var allPossibleModes = {
   focus: {
-    default_time: 20,
-    borderColor: "blue",
+    default_time: 15,
     localStorage: localStorage.getItem("focus_time"),
     sound: new Audio("assets/sounds/alert-short-break.mp3"),
     titleDisplayText: "Time to focus!",
   },
   long_break: {
-    default_time: 30,
-    borderColor: "yellow",
+    default_time: 20,
     localStorage: localStorage.getItem("long_break_time"),
     sound: new Audio("assets/sounds/alert-short-break.mp3"),
     titleDisplayText: "Time for a break!",
   },
   short_break: {
     default_time: 5,
-    borderColor: "red",
     localStorage: localStorage.getItem("short_break_time"),
     sound: new Audio("assets/sounds/alert-short-break.mp3"),
     titleDisplayText: "Time for a break!",
@@ -74,26 +73,25 @@ init();
 
 function init() {
   currentTab = "focus";
-  contentDisplay();
+  displayTimeLeftValue();
   setDataInSettingModal();
-  getToDoList();
-  displayLog();
-  displayNoTask();
+  setToDoList();
+  displayReportLog();
+  displayEmptyTask();
   displayAutoStartValue();
   displayNotificationValue();
   displayLongIntervalValue();
-  displayBackGroundMusic();
+  displayBackgroundMusic();
   changeButtonColor();
   changeBackgroundColor();
 }
 
-function contentDisplay() {
+function displayTimeLeftValue() {
   if (allPossibleModes[currentTab].localStorage) {
     timeleft = minutesToSeconds(allPossibleModes[currentTab].localStorage);
   } else {
     timeleft = minutesToSeconds(allPossibleModes[currentTab].default_time);
   }
-  timeLeftSection.style.borderColor = allPossibleModes[currentTab].borderColor;
   timeLeftSection.innerHTML = secondsToMinutes(timeleft);
 }
 
@@ -129,41 +127,41 @@ function setDataInSettingModal() {
   }
 }
 
-function getToDoList() {
-  var storedValues = window.localStorage.myitems;
-  if (storedValues !== undefined) {
-    document.querySelector("#tasklist").innerHTML = storedValues;
+function setToDoList() {
+  var todoList = localStorage.myitems;
+  if (todoList !== undefined) {
+    document.querySelector("#tasklist").innerHTML = todoList;
   }
 }
 
-function displayLog() {
+function displayReportLog() {
   if (localStorage.logContents !== undefined) {
     if (localStorage.logContents.indexOf("tr") == -1) {
       displayNoLogs();
     } else {
       if (localStorage.logContents) {
-        locationUpdateLog.innerHTML = localStorage.logContents;
+        reportUpdateLog.innerHTML = localStorage.logContents;
         hideNoLogs();
       }
     }
   }
 }
 
-function displayNoTask() {
+function displayEmptyTask() {
   if (localStorage.myitems !== undefined) {
     if (localStorage.myitems.indexOf("li") == -1) {
-      NoDataTaskText.style.display = "block";
+      empty_task_list.style.display = "block";
     } else {
-      NoDataTaskText.style.display = "none";
+      empty_task_list.style.display = "none";
     }
   }
 }
 
 function displayAutoStartValue() {
   if (localStorage.autoStartRoundsValue === "true") {
-    autoStartRoundsInput.checked = true;
+    autoStartRounds.checked = true;
   } else {
-    autoStartRoundsInput.checked = false;
+    autoStartRounds.checked = false;
   }
 }
 
@@ -177,18 +175,17 @@ function displayNotificationValue() {
 }
 
 function displayLongIntervalValue() {
-  console.log("Long interval : " + localStorage.longIntervalTime);
   if (localStorage.longIntervalTime) {
-    txt_sliderValue.innerHTML = localStorage.longIntervalTime;
-    longBreakIntervalInput.value = localStorage.longIntervalTime;
+    longBreakIntervalValue.innerHTML = localStorage.longIntervalTime;
+    longBreakIntervalSlider.value = localStorage.longIntervalTime;
   } else {
-    txt_sliderValue.innerHTML = 1;
-    longBreakIntervalInput.value = 1;
+    longBreakIntervalValue.innerHTML = 1;
+    longBreakIntervalSlider.value = 1;
     localStorage.longIntervalTime = 1;
   }
 }
 
-function displayBackGroundMusic() {
+function displayBackgroundMusic() {
   if (localStorage.backgroundMusicOptionsValue) {
     backgroundMusicOptions.value = localStorage.backgroundMusicOptionsValue;
   } else {
@@ -198,6 +195,7 @@ function displayBackGroundMusic() {
 
 function changeButtonColor() {
   if (currentTab == "focus") {
+
     btn_focus.style.backgroundColor = "rgba(0, 0, 0, 0.15)";
     btn_focus.style.color = "white";
     btn_focus.style.borderWidth = "2px";
@@ -209,7 +207,9 @@ function changeButtonColor() {
     btn_long_break.style.backgroundColor = "transparent";
     btn_long_break.style.color = "white";
     btn_long_break.style.borderWidth = "2px";
+
   } else if (currentTab == "short_break") {
+
     btn_focus.style.backgroundColor = "transparent";
     btn_focus.style.color = "white";
     btn_focus.style.borderWidth = "2px";
@@ -221,7 +221,9 @@ function changeButtonColor() {
     btn_long_break.style.backgroundColor = "transparent";
     btn_long_break.style.color = "white";
     btn_long_break.style.borderWidth = "2px";
+
   } else if (currentTab == "long_break") {
+
     btn_focus.style.backgroundColor = "transparent";
     btn_focus.style.color = "white";
     btn_focus.style.borderWidth = "2px";
@@ -233,6 +235,7 @@ function changeButtonColor() {
     btn_long_break.style.backgroundColor = "rgba(0, 0, 0, 0.15)";
     btn_long_break.style.color = "white";
     btn_long_break.style.borderWidth = "2px";
+
   }
 }
 
@@ -250,7 +253,7 @@ btn_focus.addEventListener("click", function () {
   currentTab = "focus";
   currentIntervalCount = 0;
   stopTimer();
-  contentDisplay();
+  displayTimeLeftValue();
   changeButtonColor();
   changeBackgroundColor();
 });
@@ -259,7 +262,7 @@ btn_short_break.addEventListener("click", function () {
   currentTab = "short_break";
   currentIntervalCount = 0;
   stopTimer();
-  contentDisplay();
+  displayTimeLeftValue();
   changeButtonColor();
   changeBackgroundColor();
 });
@@ -268,7 +271,7 @@ btn_long_break.addEventListener("click", function () {
   currentTab = "long_break";
   currentIntervalCount = 0;
   stopTimer();
-  contentDisplay();
+  displayTimeLeftValue();
   changeButtonColor();
   changeBackgroundColor();
 });
@@ -277,14 +280,13 @@ function titleTimeDisplay() {
   titleDisplayText = allPossibleModes[currentTab].titleDisplayText;
 }
 
-longBreakIntervalInput.addEventListener("input", function () {
-  console.log(longBreakIntervalInput.value);
-  txt_sliderValue.innerHTML = longBreakIntervalInput.value;
-  localStorage.longIntervalTime = longBreakIntervalInput.value;
+longBreakIntervalSlider.addEventListener("input", function () {
+  longBreakIntervalValue.innerHTML = longBreakIntervalSlider.value;
+  localStorage.longIntervalTime = longBreakIntervalSlider.value;
 });
 
-autoStartRoundsInput.addEventListener("change", function () {
-  localStorage.autoStartRoundsValue = autoStartRoundsInput.checked;
+autoStartRounds.addEventListener("change", function () {
+  localStorage.autoStartRoundsValue = autoStartRounds.checked;
 });
 
 tick_sound.addEventListener("change", function () {
@@ -294,7 +296,7 @@ tick_sound.addEventListener("change", function () {
 btn_clear_task.addEventListener("click", function () {
   task_list.innerHTML = "";
   localStorage.myitems = task_list.innerHTML;
-  displayNoTask();
+  displayEmptyTask();
 });
 
 backgroundMusicOptions.addEventListener("change", function () {
@@ -315,13 +317,6 @@ function playBackGroundMusic() {
     if (localStorage.backgroundMusicOptionsValue) {
       if (localStorage.backgroundMusicOptionsValue !== "None") {
         if (timerIsRunning) {
-          console.log(
-            "music option : " + localStorage.backgroundMusicOptionsValue
-          );
-          console.log(
-            "play music : " +
-              allBackgroundMusic[localStorage.backgroundMusicOptionsValue]
-          );
           allBackgroundMusic[localStorage.backgroundMusicOptionsValue].play();
         }
       }
@@ -354,7 +349,7 @@ btnSave.addEventListener("click", function () {
   allPossibleModes["short_break"].localStorage =
     document.getElementById("short_break_focus").value;
 
-  contentDisplay();
+  displayTimeLeftValue();
 });
 
 function stopTimer() {
@@ -365,14 +360,23 @@ function stopTimer() {
   document.title = "PomodoroTimers";
 }
 
-function notifyTimerEnds() {
-  console.log("Timer End");
-}
-
 btn_clear_logs.addEventListener("click", function () {
-  locationUpdateLog.innerHTML = "";
-  localStorage.logContents = locationUpdateLog.innerHTML;
+  reportUpdateLog.innerHTML = "";
+  localStorage.logContents = reportUpdateLog.innerHTML;
   displayNoLogs();
+});
+
+btn_start.addEventListener("click", function () {
+  if (!timerIsRunning) {
+    startCountDown();
+  } else {
+    stopTimer();
+  }
+});
+
+btn_reset.addEventListener("click", function () {
+  stopTimer();
+  displayTimeLeftValue();
 });
 
 function startCountDown() {
@@ -387,14 +391,12 @@ function startCountDown() {
   updateSeconds = setInterval(function () {
     if (timeleft <= 0) {
       stopTimer();
-      notifyTimerEnds();
       currentEndTime = getTime();
       allPossibleModes[currentTab].sound.play();
-      appendDataToLogModal();
-      displayLog();
+      appendDataToReportModal();
+      displayReportLog();
       autoStartRound();
-      contentDisplay();
-      sendNotificationToBrowser(currentTab);
+      displayTimeLeftValue();
     }
 
     playTickSound();
@@ -406,46 +408,13 @@ function startCountDown() {
   }, 1000);
 }
 
-function sendNotificationToBrowser(data) {
-  console.log("Notification: " + chrome.notifications);
-
-  if (chrome.notifications !== undefined) {
-    var options = {
-      title: "Pomodoro Timer",
-      message: data,
-      iconUrl: "/images/favicon-16x16.png",
-      type: "basic",
-      requireInteraction: true,
-    };
-    chrome.notifications.create("", options);
-  }
-}
-
-btn_start.addEventListener("click", function () {
-  if (!timerIsRunning) {
-    startCountDown();
-  } else {
-    stopTimer();
-  }
-});
-
-btn_reset.addEventListener("click", function () {
-  stopTimer();
-  contentDisplay();
-});
-
 function autoStartRound() {
-  console.log("autoStartRound_1 : " + currentIntervalCount);
-  console.log("autoStartRound_2 : " + (localStorage.longIntervalTime - 1));
 
   if (localStorage.autoStartRoundsValue === "true") {
-    if (
-      currentTab === "focus" &&
-      currentIntervalCount == localStorage.longIntervalTime - 1
-    ) {
+    if (currentTab === "focus" && currentIntervalCount == localStorage.longIntervalTime - 1) {
       currentIntervalCount = 0;
       currentTab = "long_break";
-      contentDisplay();
+      displayTimeLeftValue();
 
       changeButtonColor();
       changeBackgroundColor();
@@ -456,7 +425,7 @@ function autoStartRound() {
     } else if (currentTab === "focus") {
       currentIntervalCount++;
       currentTab = "short_break";
-      contentDisplay();
+      displayTimeLeftValue();
       changeButtonColor();
       changeBackgroundColor();
       setTimeout(() => {
@@ -464,7 +433,7 @@ function autoStartRound() {
       }, 1000);
     } else if (currentTab === "long_break" || currentTab === "short_break") {
       currentTab = "focus";
-      contentDisplay();
+      displayTimeLeftValue();
       changeButtonColor();
       changeBackgroundColor();
       setTimeout(() => {
@@ -487,7 +456,7 @@ function playTickSound() {
   }
 }
 
-function appendDataToLogModal() {
+function appendDataToReportModal() {
   var sessionsCol = document.createElement("th");
 
   sessionsCol.setAttribute("scope", "row");
@@ -533,11 +502,17 @@ function appendDataToLogModal() {
   row.appendChild(endTimeCol);
   row.appendChild(timeCol);
 
-  row.innerHTML +=
-    '<td><input class="form-control" type="text" placeholder="" onchange="storeLogDescription(this)"></td>';
-  row.innerHTML += `<td><button type="button" class="close" onclick = "deleteLog(this)" aria-label="Close"><img src='images/delete.png'></img></button></td>`;
-  locationUpdateLog.appendChild(row);
-  localStorage.logContents = locationUpdateLog.innerHTML;
+  row.innerHTML += `<td>
+    <input class="form-control" type="text" placeholder="" onchange="storeLogDescription(this)">
+    </td>`;
+  row.innerHTML += `<td>
+  <button type="button" class="close" onclick = "deleteLog(this)" aria-label="Close">
+  <img src='images/delete.png'></img>
+  </button>
+  </td>
+  `;
+  reportUpdateLog.appendChild(row);
+  localStorage.logContents = reportUpdateLog.innerHTML;
 }
 
 function storeLogDescription(item) {
@@ -545,20 +520,18 @@ function storeLogDescription(item) {
     '<td><input class="form-control" type="text" value="' +
     item.value +
     '" onchange="storeLogDescription(this)"></td>';
-  localStorage.logContents = locationUpdateLog.innerHTML;
+  localStorage.logContents = reportUpdateLog.innerHTML;
 }
 
 function deleteLog(item) {
   item.parentNode.parentNode.remove();
-  localStorage.logContents = locationUpdateLog.innerHTML;
+  localStorage.logContents = reportUpdateLog.innerHTML;
 }
 
 btn_add_task.addEventListener("click", function () {
   if (document.querySelector("#textvalue").value !== "") {
     var listItem = document.createElement("li");
-    var todo = document.createTextNode(
-      document.querySelector("#textvalue").value
-    );
+    var todo = document.createTextNode(document.querySelector("#textvalue").value);
     listItem.appendChild(todo);
     listItem.setAttribute("id", "list_item");
     listItem.setAttribute("class", "list-group-item");
@@ -579,7 +552,7 @@ btn_add_task.addEventListener("click", function () {
     task_list.appendChild(listItem);
     document.querySelector("#textvalue").value = "";
     storeTask();
-    displayNoTask();
+    displayEmptyTask();
   } else {
     alert("Task can not be empty.");
   }
@@ -596,23 +569,20 @@ function taskMouseOver(item) {
 }
 
 function checkedWhenclicked(item) {
-  console.log("checkedWhenclicked");
   item.style.transition = "all 0.2s ease-in";
   item.classList.toggle("done");
 }
 
 function storeTask() {
-  window.localStorage.myitems = task_list.innerHTML;
+  localStorage.myitems = task_list.innerHTML;
 }
 
 function deleteTasks(item) {
-  console.log("delete task");
   item.parentElement.style.transition = "all 0.2s ease-in";
-  item.parentElement.classList.add("slide-away");
   item.parentElement.addEventListener("transitionend", function () {
     item.parentElement.remove();
     storeTask();
-    displayNoTask();
+    displayEmptyTask();
   });
 }
 
@@ -624,27 +594,23 @@ function displayNoLogs() {
 }
 
 let conversionMiToTimeOp = function conversionMiToTime(totalMinutes) {
-  var minutes = totalMinutes % 60;
-  var hours = (totalMinutes - minutes) / 60;
-  var output = minutes + ": 00";
-  return output;
+  return (totalMinutes % 60) + ": 00";
 };
 
-function minutesToSeconds(m) {
-  var seconds = m * 60;
-  return seconds;
+function minutesToSeconds(minute) {
+  return minute * 60;
 }
 
-function secondsToMinutes(s) {
-  var minutes = Math.floor(s / 60);
-  var seconds = s % 60;
-  if (seconds.toString().length === 1) {
-    seconds = "0" + seconds.toString();
+function secondsToMinutes(second) {
+  var minutes = Math.floor(second / 60);
+  var seconds = second % 60;
+  if (String(seconds).length === 1) {
+    seconds = "0" + String(seconds);
   }
-  if (minutes.toString().length === 1) {
-    minutes = "0" + minutes.toString();
+  if (String(minutes).length === 1) {
+    minutes = "0" + String(minutes);
   }
-  return minutes + ":" + seconds.toString();
+  return minutes + ":" + String(seconds);
 }
 
 function getDate() {
@@ -681,7 +647,7 @@ function getTime() {
     amOrPm = " PM";
   }
   var minutes = today.getMinutes();
-  if (minutes.toString().length === 1) {
+  if (String(minutes).length === 1) {
     minutes = "0" + minutes;
   }
   var time = hours + ":" + minutes + amOrPm;

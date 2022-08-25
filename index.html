@@ -99,18 +99,18 @@
                             <div class="col-lg-4">
                                 <div class="input-group mb-2">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text">Long break</span>
+                                        <span class="input-group-text">Short break</span>
                                     </div>
-                                    <input id="long_break_focus" type="number" class="form-control" />
+                                    <input id="short_break_focus" type="number" class="form-control" />
                                 </div>
                             </div>
 
                             <div class="col-lg-4">
                                 <div class="input-group mb-2">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text">Short break</span>
+                                        <span class="input-group-text">Long break</span>
                                     </div>
-                                    <input id="short_break_focus" type="number" class="form-control" />
+                                    <input id="long_break_focus" type="number" class="form-control" />
                                 </div>
                             </div>
 
@@ -122,7 +122,7 @@
                             </div>
                             <div class="col">
                                 <label class="switch">
-                                    <input id="autoStartRoundsInput" type="checkbox" />
+                                    <input id="autoStartRounds" type="checkbox" />
                                     <span class="slider round"></span>
                                 </label>
                             </div>
@@ -137,10 +137,10 @@
                                 <form>
                                     <div class="row">
                                         <div class="col">
-                                            <input type="range" min="1" max="12" id="longBreakIntervalInput" />
+                                            <input type="range" min="1" max="12" id="longBreakIntervalSlider" />
                                         </div>
                                         <div class="col">
-                                            <p class="font-weight-bold" id="txt_sliderValue"></p>
+                                            <p class="font-weight-bold" id="longBreakIntervalValue"></p>
                                         </div>
                                     </div>
                                 </form>
@@ -243,14 +243,14 @@
                         </div>
 
                         <div class="text-muted d-flex justify-content-center">
-                            <h2 id="NoDataTaskText">No data task yet</h2>
+                            <h2 id="empty_task_list">No data task yet</h2>
                         </div>
 
                     </div>
 
                     <div class="modal-footer">
                         <div class="container d-flex justify-content-center">
-                            <button type="button" class="button" id="btn_clear_task">Clear Tasks</button>
+                            <button type="button" class="button" id="btn-clear-task">Clear Tasks</button>
                         </div>
                     </div>
 
@@ -284,7 +284,7 @@
                                         <th scope="col"></th>
                                     </tr>
                                 </thead>
-                                <tbody id="locationUpdateLog"></tbody>
+                                <tbody id="reportUpdateLog"></tbody>
                             </table>
                         </div>
 
@@ -296,7 +296,7 @@
 
                     <div class="modal-footer">
                         <div class="container d-flex justify-content-center">
-                            <button type="button" class="button" id="btn_clear_logs">Clear Log</button>
+                            <button type="button" class="button" id="btn-clear-logs">Clear Log</button>
                         </div>
                     </div>
 
