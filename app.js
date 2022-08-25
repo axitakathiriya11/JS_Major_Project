@@ -195,7 +195,6 @@ function displayBackgroundMusic() {
 
 function changeButtonColor() {
   if (currentTab == "focus") {
-
     btn_focus.style.backgroundColor = "rgba(0, 0, 0, 0.15)";
     btn_focus.style.color = "white";
     btn_focus.style.borderWidth = "2px";
@@ -207,9 +206,7 @@ function changeButtonColor() {
     btn_long_break.style.backgroundColor = "transparent";
     btn_long_break.style.color = "white";
     btn_long_break.style.borderWidth = "2px";
-
   } else if (currentTab == "short_break") {
-
     btn_focus.style.backgroundColor = "transparent";
     btn_focus.style.color = "white";
     btn_focus.style.borderWidth = "2px";
@@ -221,9 +218,7 @@ function changeButtonColor() {
     btn_long_break.style.backgroundColor = "transparent";
     btn_long_break.style.color = "white";
     btn_long_break.style.borderWidth = "2px";
-
   } else if (currentTab == "long_break") {
-
     btn_focus.style.backgroundColor = "transparent";
     btn_focus.style.color = "white";
     btn_focus.style.borderWidth = "2px";
@@ -235,7 +230,6 @@ function changeButtonColor() {
     btn_long_break.style.backgroundColor = "rgba(0, 0, 0, 0.15)";
     btn_long_break.style.color = "white";
     btn_long_break.style.borderWidth = "2px";
-
   }
 }
 
@@ -409,9 +403,11 @@ function startCountDown() {
 }
 
 function autoStartRound() {
-
   if (localStorage.autoStartRoundsValue === "true") {
-    if (currentTab === "focus" && currentIntervalCount == localStorage.longIntervalTime - 1) {
+    if (
+      currentTab === "focus" &&
+      currentIntervalCount == localStorage.longIntervalTime - 1
+    ) {
       currentIntervalCount = 0;
       currentTab = "long_break";
       displayTimeLeftValue();
@@ -531,7 +527,9 @@ function deleteLog(item) {
 btn_add_task.addEventListener("click", function () {
   if (document.querySelector("#textvalue").value !== "") {
     var listItem = document.createElement("li");
-    var todo = document.createTextNode(document.querySelector("#textvalue").value);
+    var todo = document.createTextNode(
+      document.querySelector("#textvalue").value
+    );
     listItem.appendChild(todo);
     listItem.setAttribute("id", "list_item");
     listItem.setAttribute("class", "list-group-item");
