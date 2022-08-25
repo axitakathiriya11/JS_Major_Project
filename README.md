@@ -1,4 +1,3 @@
-# JS_Major_Project
 
 # PomodoroTimers
 
@@ -37,4 +36,3 @@
 ## Roadmap
 Future plans for enhancements and development:
 - Make Google Chrome Extension
-- Add User Authentication
