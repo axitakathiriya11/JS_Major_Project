@@ -21,6 +21,7 @@ let autoStartRounds = document.getElementById("autoStartRounds");
 let longBreakIntervalSlider = document.getElementById(
   "longBreakIntervalSlider"
 );
+
 let longBreakIntervalValue = document.getElementById("longBreakIntervalValue");
 let tick_sound = document.getElementById("tick_sound");
 var notificationTextInput = document.getElementById("input_notification_time");
